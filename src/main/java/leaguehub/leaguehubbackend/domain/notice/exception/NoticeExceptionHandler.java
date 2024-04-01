@@ -1,9 +1,9 @@
-package leaguehub.leaguehubbackend.global.notice.exception;
+package leaguehub.leaguehubbackend.domain.notice.exception;
 
+import leaguehub.leaguehubbackend.domain.notice.exception.exception.NoticeUnsupportedException;
+import leaguehub.leaguehubbackend.domain.notice.exception.exception.WebScrapingException;
 import leaguehub.leaguehubbackend.global.exception.global.ExceptionCode;
 import leaguehub.leaguehubbackend.global.exception.global.ExceptionResponse;
-import leaguehub.leaguehubbackend.global.notice.exception.exception.NoticeUnsupportedException;
-import leaguehub.leaguehubbackend.global.notice.exception.exception.WebScrapingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

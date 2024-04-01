@@ -1,4 +1,4 @@
-package leaguehub.leaguehubbackend.global.notice.exception;
+package leaguehub.leaguehubbackend.domain.notice.exception;
 
 import leaguehub.leaguehubbackend.global.exception.global.ExceptionCode;
 import lombok.Getter;
