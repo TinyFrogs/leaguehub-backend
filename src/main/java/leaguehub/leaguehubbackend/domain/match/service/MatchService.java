@@ -16,6 +16,7 @@ import leaguehub.leaguehubbackend.domain.match.repository.MatchPlayerRepository;
 import leaguehub.leaguehubbackend.domain.match.repository.MatchRepository;
 import leaguehub.leaguehubbackend.domain.match.repository.MatchSetRepository;
 import leaguehub.leaguehubbackend.domain.member.entity.Member;
+import leaguehub.leaguehubbackend.domain.member.service.MemberAuthService;
 import leaguehub.leaguehubbackend.domain.member.service.MemberService;
 import leaguehub.leaguehubbackend.domain.participant.entity.Participant;
 import leaguehub.leaguehubbackend.domain.participant.entity.Role;
@@ -50,6 +51,7 @@ public class MatchService {
     private final ParticipantRepository participantRepository;
     private final MatchSetRepository matchSetRepository;
     private final MemberService memberService;
+    private final MemberAuthService memberAuthService;
     private static final int INITIAL_RANK = 1;
 
 
@@ -507,7 +509,7 @@ public class MatchService {
     }
 
     private Long getRequestMatchPlayerId(String channelLink, List<MatchPlayer> matchPlayers) {
-        if (memberService.checkIfMemberIsAnonymous()) {
+        if (memberAuthService.checkIfMemberIsAnonymous()) {
             return 0L;
         }
         Member member = memberService.findCurrentMember();

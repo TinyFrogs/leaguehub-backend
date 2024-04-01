@@ -20,6 +20,8 @@ import leaguehub.leaguehubbackend.domain.member.dto.member.ProfileDto;
 import leaguehub.leaguehubbackend.domain.member.entity.Member;
 import leaguehub.leaguehubbackend.domain.member.exception.member.exception.MemberNotFoundException;
 import leaguehub.leaguehubbackend.domain.member.repository.MemberRepository;
+import leaguehub.leaguehubbackend.domain.member.service.MemberAuthService;
+import leaguehub.leaguehubbackend.domain.member.service.MemberProfileService;
 import leaguehub.leaguehubbackend.domain.member.service.MemberService;
 import leaguehub.leaguehubbackend.domain.participant.exception.exception.ParticipantNotFoundException;
 import leaguehub.leaguehubbackend.domain.participant.repository.ParticipantRepository;
@@ -55,6 +57,9 @@ class MemberServiceTest {
     private MemberService memberService;
     private Member member;
     private Member expectedMember;
+
+    private MemberAuthService memberAuthService;
+    private MemberProfileService memberProfileService;
     @BeforeEach
     public void setUp() {
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
@@ -124,7 +129,7 @@ class MemberServiceTest {
 
         when(memberRepository.findMemberByPersonalId("id")).thenReturn(Optional.of(member));
 
-        ProfileDto profile = memberService.getProfile();
+        ProfileDto profile = memberProfileService.getProfile();
 
         assertEquals(member.getNickname(), profile.getNickName());
 
@@ -136,7 +141,7 @@ class MemberServiceTest {
 
         when(memberRepository.findMemberByPersonalId("id")).thenReturn(Optional.of(member));
 
-        MypageResponseDto mypageProfile = memberService.getMypageProfile();
+        MypageResponseDto mypageProfile = memberProfileService.getMypageProfile();
 
         assertEquals(member.getProfileImageUrl(), mypageProfile.getProfileImageUrl());
         assertEquals(member.getNickname(), mypageProfile.getNickName());
@@ -149,7 +154,7 @@ class MemberServiceTest {
     void getMypageProfile_InvalidMember() {
         when(memberRepository.findMemberByPersonalId("id")).thenReturn(Optional.empty());
 
-        assertThrows(MemberNotFoundException.class, () -> memberService.getMypageProfile());
+        assertThrows(MemberNotFoundException.class, () -> memberProfileService.getMypageProfile());
     }
     @Test
     @DisplayName("멤버 로그아웃")
@@ -160,7 +165,7 @@ class MemberServiceTest {
 
         when(memberRepository.findMemberByPersonalId("id")).thenReturn(Optional.of(member));
 
-        memberService.logoutMember(request, response);
+        memberAuthService.logoutMember(request, response);
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(memberRepository).save(any(Member.class));
@@ -175,7 +180,7 @@ class MemberServiceTest {
 
         when(memberRepository.findMemberByPersonalId("id")).thenReturn(Optional.empty());
 
-        assertThrows(MemberNotFoundException.class, () -> memberService.changeMemberParticipantNickname(nicknameRequestDto));
+        assertThrows(MemberNotFoundException.class, () -> memberProfileService.changeMemberParticipantNickname(nicknameRequestDto));
     }
 
     @Test
@@ -188,7 +193,7 @@ class MemberServiceTest {
         when(memberRepository.findMemberByPersonalId("id")).thenReturn(Optional.of(member));
         when(participantRepository.findAllByMemberId(member.getId())).thenReturn(Collections.emptyList());
 
-        assertThrows(ParticipantNotFoundException.class, () -> memberService.changeMemberParticipantNickname(nicknameRequestDto));
+        assertThrows(ParticipantNotFoundException.class, () -> memberProfileService.changeMemberParticipantNickname(nicknameRequestDto));
     }
 
 }

@@ -7,12 +7,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import leaguehub.leaguehubbackend.domain.member.controller.KakaoController;
+import leaguehub.leaguehubbackend.domain.member.controller.MemberAuthController;
 import leaguehub.leaguehubbackend.domain.member.dto.kakao.KakaoTokenResponseDto;
 import leaguehub.leaguehubbackend.domain.member.dto.kakao.KakaoUserDto;
 import leaguehub.leaguehubbackend.domain.member.dto.member.LoginMemberResponse;
 import leaguehub.leaguehubbackend.domain.member.service.JwtService;
-import leaguehub.leaguehubbackend.domain.member.service.KakaoService;
+import leaguehub.leaguehubbackend.domain.member.service.MemberAuthService;
 import leaguehub.leaguehubbackend.domain.member.service.MemberService;
 import leaguehub.leaguehubbackend.fixture.UserFixture;
 import org.junit.jupiter.api.DisplayName;
@@ -37,13 +37,16 @@ public class KakaoControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @InjectMocks
-    private KakaoController kakaoController;
+    private MemberAuthController memberAuthController;
 
     @MockBean
-    private KakaoService kakaoService;
+    private MemberAuthService kakaoService;
 
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    private MemberAuthService memberAuthService;
 
     @MockBean
     private JwtService jwtService;
@@ -71,7 +74,7 @@ public class KakaoControllerTest {
 
         when(kakaoService.getKakaoToken(anyString())).thenReturn(kakaoTokenResponseDto);
         when(kakaoService.getKakaoUser(kakaoTokenResponseDto)).thenReturn(kakaoUserDto);
-        when(memberService.findOrSaveMember(kakaoUserDto)).thenReturn(loginMemberResponse);
+        when(memberAuthService.findOrSaveMember(kakaoUserDto)).thenReturn(loginMemberResponse);
 
         mockMvc.perform(post("/api/member/oauth/kakao")
                         .header("Kakao-Code", "validCode")
@@ -98,7 +101,7 @@ public class KakaoControllerTest {
 
         given(kakaoService.getKakaoToken(kakaoCode)).willReturn(kakaoTokenResponseDto);
         given(kakaoService.getKakaoUser(kakaoTokenResponseDto)).willReturn(kakaoUserDto);
-        given(memberService.findOrSaveMember(kakaoUserDto)).willReturn(loginMemberResponse);
+        given(memberAuthService.findOrSaveMember(kakaoUserDto)).willReturn(loginMemberResponse);
 
         mockMvc.perform(post("/api/member/oauth/kakao")
                         .header("Kakao-Code", kakaoCode)

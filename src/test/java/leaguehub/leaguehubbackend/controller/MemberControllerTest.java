@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import leaguehub.leaguehubbackend.domain.member.dto.member.MypageResponseDto;
 import leaguehub.leaguehubbackend.domain.member.dto.member.NicknameRequestDto;
 import leaguehub.leaguehubbackend.domain.member.dto.member.ProfileDto;
+import leaguehub.leaguehubbackend.domain.member.service.MemberAuthService;
+import leaguehub.leaguehubbackend.domain.member.service.MemberProfileService;
 import leaguehub.leaguehubbackend.fixture.MypageResponseFixture;
 import leaguehub.leaguehubbackend.fixture.ProfileFixture;
 import leaguehub.leaguehubbackend.domain.member.service.MemberService;
@@ -48,6 +50,11 @@ class MemberControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private MemberProfileService memberProfileService;
+
+    @Autowired
+    private MemberAuthService memberAuthService;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -72,7 +79,7 @@ class MemberControllerTest {
 
         ProfileDto mockProfileResponse = ProfileFixture.createProfile();
 
-        when(memberService.getProfile())
+        when(memberProfileService.getProfile())
                 .thenReturn(mockProfileResponse);
 
         mockMvc.perform(get("/api/member/profile"))
@@ -87,7 +94,7 @@ class MemberControllerTest {
 
         MypageResponseDto mockMypageResponse = MypageResponseFixture.createMypageResponse();
 
-        when(memberService.getMypageProfile())
+        when(memberProfileService.getMypageProfile())
                 .thenReturn(mockMypageResponse);
 
         mockMvc.perform(get("/api/member/mypage"))
@@ -102,7 +109,7 @@ class MemberControllerTest {
     @DisplayName("로그아웃 요청시 성공 메시지 return")
     void whenLogout_thenReturnSuccessMessage() throws Exception {
 
-        doNothing().when(memberService).logoutMember(
+        doNothing().when(memberAuthService).logoutMember(
                 any(HttpServletRequest.class),
                 any(HttpServletResponse.class)
         );
@@ -111,7 +118,7 @@ class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Logout Success!"));
 
-        verify(memberService).logoutMember(
+        verify(memberAuthService).logoutMember(
                 any(HttpServletRequest.class),
                 any(HttpServletResponse.class)
         );
@@ -126,7 +133,7 @@ class MemberControllerTest {
         ProfileDto mockProfileResponse = ProfileFixture.createProfile();
         mockProfileResponse.setNickName("NewNickname");
 
-        when(memberService.changeMemberParticipantNickname(nicknameRequest))
+        when(memberProfileService.changeMemberParticipantNickname(nicknameRequest))
                 .thenReturn(mockProfileResponse);
 
         mockMvc.perform(post("/api/member/profile/nickname")
