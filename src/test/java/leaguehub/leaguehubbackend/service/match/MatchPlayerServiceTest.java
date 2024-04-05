@@ -13,6 +13,7 @@ import leaguehub.leaguehubbackend.domain.match.repository.MatchPlayerRepository;
 import leaguehub.leaguehubbackend.domain.match.repository.MatchRankRepository;
 import leaguehub.leaguehubbackend.domain.match.repository.MatchRepository;
 import leaguehub.leaguehubbackend.domain.match.service.MatchPlayerService;
+import leaguehub.leaguehubbackend.domain.match.service.MatchQueryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ class MatchPlayerServiceTest {
     MatchRepository matchRepository;
     @Autowired
     MatchPlayerService matchPlayerService;
+    @Autowired
+    MatchQueryService matchQueryService;
 
     @Test
     @DisplayName("점수 업데이트 성공 - 동점자 로직(1등 많이 한 사람, Becrux) 진출")
@@ -97,7 +100,7 @@ class MatchPlayerServiceTest {
     @Test
     @DisplayName("이전 경기 결과 조회 테스트")
     void getGameResult() {
-        List<GameResultDto> gameResultList = matchPlayerService.getGameResult(1L);
+        List<GameResultDto> gameResultList = matchQueryService.getGameResult(1L);
 
         assertThat(gameResultList.size()).isEqualTo(2);
         assertThat(gameResultList.get(0).getMatchRankResultDtos().stream()
@@ -112,7 +115,7 @@ class MatchPlayerServiceTest {
     @Test
     @DisplayName("이전 경기 결과 조회 테스트-결과없음")
     void getGameResult_fail() {
-        assertThatThrownBy(() -> matchPlayerService.getGameResult(2L)).isInstanceOf(MatchResultIdNotFoundException.class);
+        assertThatThrownBy(() -> matchQueryService.getGameResult(2L)).isInstanceOf(MatchResultIdNotFoundException.class);
     }
 
 }

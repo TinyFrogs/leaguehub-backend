@@ -1,6 +1,7 @@
 package leaguehub.leaguehubbackend.service.match;
 
 import jakarta.transaction.Transactional;
+import leaguehub.leaguehubbackend.domain.match.service.MatchQueryService;
 import leaguehub.leaguehubbackend.domain.match.service.MatchService;
 import leaguehub.leaguehubbackend.domain.channel.dto.CreateChannelDto;
 import leaguehub.leaguehubbackend.domain.match.dto.MatchPlayerInfo;
@@ -64,6 +65,8 @@ public class MatchServiceScoreTest {
     MatchPlayerRepository matchPlayerRepository;
     @Autowired
     MatchRepository matchRepository;
+    @Autowired
+    MatchQueryService matchQueryService;
     @Mock
     MemberService memberService;
 
@@ -146,7 +149,7 @@ public class MatchServiceScoreTest {
     @DisplayName("getMatchScoreInfo 테스트 - 성공")
     public void getMatchScoreInfoSuccessTest() throws Exception {
 
-        MatchScoreInfoDto result = matchService.getMatchScoreInfo(channel.getChannelLink(), savedMatch.getId());
+        MatchScoreInfoDto result = matchQueryService.getMatchScoreInfo(channel.getChannelLink(), savedMatch.getId());
         assertNotNull(result);
         assertEquals(-1, result.getRequestMatchPlayerId());
 
@@ -162,7 +165,7 @@ public class MatchServiceScoreTest {
 
         Long matchId = 1L;
 
-        MatchScoreInfoDto testDto = matchService.getMatchScoreInfo(channel.getChannelLink(), savedMatch.getId());
+        MatchScoreInfoDto testDto = matchQueryService.getMatchScoreInfo(channel.getChannelLink(), savedMatch.getId());
 
         assertNotNull(testDto);
         assertEquals(-1, testDto.getRequestMatchPlayerId());
@@ -186,7 +189,7 @@ public class MatchServiceScoreTest {
         Long invalidMatchId = 1234L;
 
         assertThrows(MatchNotFoundException.class, () -> {
-            matchService.getMatchScoreInfo("1234", invalidMatchId);
+            matchQueryService.getMatchScoreInfo("1234", invalidMatchId);
         });
     }
 

@@ -8,6 +8,7 @@ import leaguehub.leaguehubbackend.domain.channel.entity.ChannelBoard;
 import leaguehub.leaguehubbackend.domain.channel.exception.exception.ChannelBoardNotFoundException;
 import leaguehub.leaguehubbackend.domain.channel.repository.ChannelBoardRepository;
 import leaguehub.leaguehubbackend.domain.match.dto.MyMatchDto;
+import leaguehub.leaguehubbackend.domain.match.service.MatchQueryService;
 import leaguehub.leaguehubbackend.domain.match.service.MatchService;
 import leaguehub.leaguehubbackend.domain.member.entity.Member;
 import leaguehub.leaguehubbackend.domain.member.service.MemberService;
@@ -28,6 +29,7 @@ public class ChannelBoardService {
     private final ChannelBoardRepository channelBoardRepository;
     private final MemberService memberService;
     private final MatchService matchService;
+    private final MatchQueryService matchQueryService;
 
     @Transactional
     public ChannelBoardLoadDto createChannelBoard(String channelLink, ChannelBoardDto request) {
@@ -66,7 +68,7 @@ public class ChannelBoardService {
                 .map(channelBoard -> new ChannelBoardLoadDto(channelBoard.getId(), channelBoard.getTitle(), channelBoard.getIndex()))
                 .collect(Collectors.toList());
 
-        MyMatchDto matchDto = matchService.getMyMatchRound(channelLink);
+        MyMatchDto matchDto = matchQueryService.getMyMatchRound(channelLink);
 
         return new ChannelBoardInfoDto(matchDto.getMyMatchRound(), matchDto.getMyMatchId(), channelBoardLoadDtoList);
     }

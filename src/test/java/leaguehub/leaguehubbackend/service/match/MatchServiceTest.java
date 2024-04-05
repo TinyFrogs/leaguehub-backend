@@ -1,6 +1,7 @@
 package leaguehub.leaguehubbackend.service.match;
 
 import jakarta.transaction.Transactional;
+import leaguehub.leaguehubbackend.domain.match.service.MatchQueryService;
 import leaguehub.leaguehubbackend.domain.match.service.MatchService;
 import leaguehub.leaguehubbackend.domain.channel.dto.CreateChannelDto;
 import leaguehub.leaguehubbackend.domain.match.dto.MatchRoundListDto;
@@ -56,6 +57,9 @@ class MatchServiceTest {
 
     @Autowired
     ChannelRuleRepository channelRuleRepository;
+
+    @Autowired
+    MatchQueryService matchQueryService;
 
     @Autowired
     MatchService matchService;
@@ -146,7 +150,7 @@ class MatchServiceTest {
         UserFixture.setUpCustomAuth("id");
         Channel channel = createCustomChannel(false, false, 2400, null, 20);
 
-        MatchRoundListDto roundList = matchService.getRoundList(channel.getChannelLink());
+        MatchRoundListDto roundList = matchQueryService.getRoundList(channel.getChannelLink());
 
         assertThat(roundList.getRoundList().size()).isEqualTo(2);
     }
