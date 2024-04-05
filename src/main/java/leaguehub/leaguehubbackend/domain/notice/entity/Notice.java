@@ -1,6 +1,7 @@
 package leaguehub.leaguehubbackend.domain.notice.entity;
 
 import jakarta.persistence.*;
+import leaguehub.leaguehubbackend.global.audit.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @DynamicUpdate
 @Getter
-public class Notice {
+public class Notice extends BaseTimeEntity {
 
     @Id
     @Column(name = "notice_id")
