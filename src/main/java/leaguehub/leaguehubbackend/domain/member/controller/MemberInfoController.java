@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 public class MemberInfoController {
 
 
-    private final MemberService memberService;
     private final MemberProfileService memberProfileService;
 
     @Operation(summary = "사용자 프로필 조회", description = "사용자의 이미지 URL과 닉네임을 조회")

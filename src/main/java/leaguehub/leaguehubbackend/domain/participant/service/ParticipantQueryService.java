@@ -21,8 +21,8 @@ import static leaguehub.leaguehubbackend.domain.participant.entity.RequestStatus
 import static leaguehub.leaguehubbackend.domain.participant.entity.Role.*;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class ParticipantQueryService {
 
 
@@ -38,6 +38,7 @@ public class ParticipantQueryService {
      * @param channelLink
      * @return
      */
+    @Transactional(readOnly = true)
     public int findParticipantPermission(String channelLink) {
         UserDetails userDetails = SecurityUtils.getAuthenticatedUser();
         if (userDetails == null) return OBSERVER.getNum();
@@ -57,6 +58,7 @@ public class ParticipantQueryService {
      * @param channelLink
      * @return
      */
+    @Transactional(readOnly = true)
     public String findChannelHost(String channelLink) {
         return participantRepository.findParticipantByRoleAndChannel_ChannelLinkOrderById(HOST, channelLink).get(0).getNickname();
     }
@@ -68,6 +70,7 @@ public class ParticipantQueryService {
      * @param channelLink
      * @return
      */
+    @Transactional(readOnly = true)
     public List<ResponseStatusPlayerDto> loadObserverPlayerList(String channelLink) {
         Participant findParticipant = participantService.getParticipant(channelLink);
 
@@ -87,6 +90,7 @@ public class ParticipantQueryService {
      * @param channelLink
      * @return
      */
+    @Transactional(readOnly = true)
     public List<ResponseStatusPlayerDto> loadRequestStatusPlayerList(String channelLink) {
         Participant findParticipant = participantService.getParticipant(channelLink);
         participantService.checkRole(findParticipant.getRole(), HOST);
@@ -106,6 +110,7 @@ public class ParticipantQueryService {
      * @param channelLink
      * @return RequestPlayerDtoList
      */
+    @Transactional(readOnly = true)
     public List<ResponseStatusPlayerDto> loadPlayers(String channelLink) {
 
         return participantRepository.findAllByChannel_ChannelLinkAndRoleAndRequestStatusOrderByNicknameAsc
