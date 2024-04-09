@@ -1,0 +1,62 @@
+name: CD Workflow
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  docker:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      # JDK setting - github actions에서 사용할 JDK 설정
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 환경별 properties 파일 생성 - API-KEY
+      - name: make application-API-KEY.properties
+        run: |
+          cd ./src/main/resources
+          touch ./application-API-KEY.properties
+          echo "${{ secrets.YML }}" > ./application-API-KEY.properties
+        shell: bash
+
+      # gradle 권한 설정
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # gradle build
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      # Docker
+      - name: Login DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Docker Image Build & Push
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_REGISTRY }}/${{ secrets.DOCKERHUB_IMAGE_NAME }} -f Dockerfile .
+          docker push ${{ secrets.DOCKERHUB_REGISTRY }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}
+
+      - name: EC2 Login
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.HOST_NAME }}
+          username: ${{secrets.USER_NAME }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            docker-compose down
+            docker image prune -f
+            docker rm $(docker ps -a -q)
+            docker pull ${{ secrets.DOCKERHUB_REGISTRY }}/${{ secrets.DOCKERHUB_IMAGE_NAME }}
+            docker-compose up -d
+
