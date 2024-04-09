@@ -40,9 +40,6 @@ public class KakaoControllerTest {
     private MemberAuthController memberAuthController;
 
     @MockBean
-    private MemberAuthService kakaoService;
-
-    @MockBean
     private MemberService memberService;
 
     @MockBean
@@ -72,8 +69,8 @@ public class KakaoControllerTest {
         KakaoUserDto kakaoUserDto = new KakaoUserDto();
         LoginMemberResponse loginMemberResponse = UserFixture.createLoginResponse();
 
-        when(kakaoService.getKakaoToken(anyString())).thenReturn(kakaoTokenResponseDto);
-        when(kakaoService.getKakaoUser(kakaoTokenResponseDto)).thenReturn(kakaoUserDto);
+        when(memberAuthService.getKakaoToken(anyString())).thenReturn(kakaoTokenResponseDto);
+        when(memberAuthService.getKakaoUser(kakaoTokenResponseDto)).thenReturn(kakaoUserDto);
         when(memberAuthService.findOrSaveMember(kakaoUserDto)).thenReturn(loginMemberResponse);
 
         mockMvc.perform(post("/api/member/oauth/kakao")
@@ -99,8 +96,8 @@ public class KakaoControllerTest {
                 .verifiedUser(true)
                 .build();
 
-        given(kakaoService.getKakaoToken(kakaoCode)).willReturn(kakaoTokenResponseDto);
-        given(kakaoService.getKakaoUser(kakaoTokenResponseDto)).willReturn(kakaoUserDto);
+        given(memberAuthService.getKakaoToken(kakaoCode)).willReturn(kakaoTokenResponseDto);
+        given(memberAuthService.getKakaoUser(kakaoTokenResponseDto)).willReturn(kakaoUserDto);
         given(memberAuthService.findOrSaveMember(kakaoUserDto)).willReturn(loginMemberResponse);
 
         mockMvc.perform(post("/api/member/oauth/kakao")

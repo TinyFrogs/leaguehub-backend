@@ -177,10 +177,12 @@ class ChannelBoardControllerTest {
         ParticipantChannelDto participantChannelDto = channelService.createChannel(createChannelDto);
         Optional<Channel> channel = channelRepository.findByChannelLink(participantChannelDto.getChannelLink());
 
+        Long badId = 1023901L;
+
         mockMvc.perform(MockMvcRequestBuilders.get("/api/channel/"
-                        + channel.get().getChannelLink() + "/1231145d")
+                        + channel.get().getChannelLink() + "/" + badId)
                 )
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
@@ -283,10 +285,14 @@ class ChannelBoardControllerTest {
         ParticipantChannelDto participantChannelDto = channelService.createChannel(createChannelDto);
         Optional<Channel> channel = channelRepository.findByChannelLink(participantChannelDto.getChannelLink());
 
+
+        Long badId = 1023901L;
+
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/channel/"
-                        + channel.get().getChannelLink() + "/" + "No_valid_id")
+                        + channel.get().getChannelLink() + "/" + badId)
                 )
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(print());
     }
 
     @Test
