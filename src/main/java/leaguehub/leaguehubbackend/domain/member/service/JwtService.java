@@ -16,9 +16,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
+import static leaguehub.leaguehubbackend.domain.member.constant.TokenConstant.*;
 
 @Service
 @RequiredArgsConstructor
@@ -65,27 +65,33 @@ public class JwtService {
     }
 
     /**
-     * 헤더에서 RefreshToken 추출
+     * 쿠키에서 RefreshToken 추출
      */
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader("Authorization-refresh"))
-                .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+        return Arrays.asList(request.getCookies()).stream()
+                .filter(cookie -> cookie.getName().equals(REFRESH_TOKEN))
+                .findFirst()
+                .map(cookie -> cookie.getValue())
+                .filter(accessToken -> accessToken.startsWith(BEARER))
+                .map(accessToken -> accessToken.replace(BEARER, ""));
     }
 
     /**
-     * 헤더에서 AccessToken 추출
+     * 쿠키에서 AccessToken 추출
      */
     public Optional<String> extractAccessToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader("Authorization"))
+        return Arrays.asList(request.getCookies()).stream()
+                .filter(cookie -> cookie.getName().equals(ACCESS_TOKEN))
+                .findFirst()
+                .map(cookie -> cookie.getValue())
                 .filter(accessToken -> accessToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+                .map(accessToken -> accessToken.replace(BEARER, ""));
     }
     /**
      * STOMP 헤더에서 AccessToken 추출
      */
     public Optional<String> extractAccessToken(StompHeaderAccessor accessor) {
-        return Optional.ofNullable(accessor.getFirstNativeHeader("Authorization"))
+        return Optional.ofNullable(accessor.getFirstNativeHeader(AUTHORIZATION))
                 .filter(accessToken -> accessToken.startsWith(BEARER))
                 .map(accessToken -> accessToken.replace(BEARER, ""));
     }
