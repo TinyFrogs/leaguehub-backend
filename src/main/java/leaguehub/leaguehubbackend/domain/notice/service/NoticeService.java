@@ -37,11 +37,11 @@ public class NoticeService {
     /**
      * 원하는 게임의 공지사항 반환
      *
-     * @param gameType
+     * @param target
      * @return
      */
-    public List<NoticeDto> getNotices(GameType gameType) {
-        List<Notice> noticeList = noticeRepository.findAllByGameTypeOrderByIdAsc(gameType);
+    public List<NoticeDto> getNotices(String target) {
+        List<Notice> noticeList = noticeRepository.findAllByGameTypeOrderByIdAsc(getGameType(target));
 
         List<NoticeDto> noticeDtos = new ArrayList<>();
 
@@ -61,11 +61,12 @@ public class NoticeService {
     /**
      * 게임 공지사항 업데이트(수동)
      *
-     * @param gameType
+     * @param target
      * @return
      */
     @Transactional
-    public List<Notice> updateNotices(GameType gameType) {
+    public List<Notice> updateNotices(String target) {
+        GameType gameType = getGameType(target);
         return switch (gameType) {
             case LOL, TFT ->
                     scrapeRiotNotice(gameType, gameType.getUrl(), gameType.getSelector(), gameType.getTitleSelector());
@@ -84,6 +85,7 @@ public class NoticeService {
      */
     @Transactional
     public void updateNoticeSchedule() {
+        log.info("므앙므앙감자");
         scrapeRiotNotice(LOL, LOL.getUrl(), LOL.getSelector(), LOL.getTitleSelector());
         log.info("LOL 공지사항 업데이트 완료");
 

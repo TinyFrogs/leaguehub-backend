@@ -37,7 +37,7 @@ public class NoticeServiceTest {
     @DisplayName("공지사항 추출 테스트")
     void noticeTest() {
 
-        List<NoticeDto> notices = noticeService.getNotices(GameType.MAIN);
+        List<NoticeDto> notices = noticeService.getNotices("main");
 
         assertThat(notices.get(0).getNoticeTitle()).isEqualTo("리그허브 서비스 오픈");
         assertThat(notices.get(1).getNoticeTitle()).isEqualTo("리그허브 서비스 안정화");
@@ -49,9 +49,9 @@ public class NoticeServiceTest {
     @DisplayName("공지사항 업데이트 테스트")
     void noticeUpdateTest() throws Exception {
         //given
-        List<Notice> noticeList = noticeService.updateNotices(GameType.TFT);
+        List<Notice> noticeList = noticeService.updateNotices("tft");
 
         assertThat(noticeList.size()).isEqualTo(6);
-        assertThatThrownBy(()->noticeService.updateNotices(GameType.MAIN)).isInstanceOf(NoticeUnsupportedException.class);
+        assertThatThrownBy(() -> noticeService.updateNotices("main")).isInstanceOf(NoticeUnsupportedException.class);
     }
 }

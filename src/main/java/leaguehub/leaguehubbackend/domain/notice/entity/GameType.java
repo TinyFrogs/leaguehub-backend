@@ -32,4 +32,14 @@ public enum GameType {
         this.selector = selector;
         this.titleSelector = titleSelector;
     }
+
+    public static GameType getGameType(String target) {
+        for (GameType value : GameType.values()) {
+            if (target.equalsIgnoreCase(value.toString()))
+                return value;
+        }
+
+        return null;
+
+    }
 }

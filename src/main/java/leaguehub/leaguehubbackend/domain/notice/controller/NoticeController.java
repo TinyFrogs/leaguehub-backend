@@ -28,7 +28,7 @@ public class NoticeController {
             @ApiResponse(responseCode = "200", description = "요청하는 게임의 공지사항 가져오기", content = @Content(mediaType = "application/json", schema = @Schema(implementation = NoticeDto.class))),
     })
     @GetMapping("/notice/{target}")
-    public ResponseEntity findTargetNotice(@PathVariable("target") GameType target) {
+    public ResponseEntity findTargetNotice(@PathVariable("target") String target) {
         return new ResponseEntity<>(noticeService.getNotices(target), OK);
     }
 
@@ -38,11 +38,11 @@ public class NoticeController {
             @ApiResponse(responseCode = "200", description = "OK"),
     })
     @PostMapping("/notice/new/{target}")
-    public ResponseEntity updateNewNotice(@PathVariable("target") GameType gameType) {
+    public ResponseEntity updateNewNotice(@PathVariable("target") String target) {
 
-        noticeService.updateNotices(gameType);
+        noticeService.updateNotices(target);
 
-        return new ResponseEntity<>(gameType + "update Success", OK);
+        return new ResponseEntity<>(target + "update Success", OK);
     }
 
 
