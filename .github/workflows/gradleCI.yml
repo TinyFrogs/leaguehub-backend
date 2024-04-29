@@ -33,18 +33,23 @@ jobs:
           echo "${{ secrets.YML_CI }}" > ./application-API-KEY.properties
         shell: bash
 
-
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
+
+      # gradle build
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
 
       - name: Test with JaCoCo
         run: ./gradlew build jacocoTestReport
 
       - name: Upload JaCoCo Coverage Report
-        uses: actions/upload-artifact@v3
+        uses: madrapps/jacoco-report@v1.2
         with:
           name: jacoco-report
-          path: build/reports/jacoco/test/html/
+          path: leaguehub-backend/build/reports/jacoco/test/html/jacocoTestReport.xml
+          token: ${{ secrets.GIT_TOKEN }}
+          title: "테스트 커버리지 측정"
 
 
 
