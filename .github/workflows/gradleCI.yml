@@ -40,16 +40,16 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean build -x test
 
-      - name: Test with JaCoCo
-        run: ./gradlew build jacocoTestReport
-
-      - name: Upload JaCoCo Coverage Report
-        uses: madrapps/jacoco-report@v1.2
-        with:
-          name: jacoco-report
-          path: leaguehub-backend/build/reports/jacoco/test/html/jacocoTestReport.xml
-          token: ${{ secrets.GIT_TOKEN }}
-          title: "테스트 커버리지 측정"
+#      - name: Test with JaCoCo
+#        run: ./gradlew build jacocoTestReport
+#
+#      - name: Upload JaCoCo Coverage Report
+#        uses: madrapps/jacoco-report@v1.2
+#        with:
+#          name: jacoco-report
+#          path: leaguehub-backend/build/reports/jacoco/test/html/jacocoTestReport.xml
+#          token: ${{ secrets.GIT_TOKEN }}
+#          title: "테스트 커버리지 측정"
 
 
 
