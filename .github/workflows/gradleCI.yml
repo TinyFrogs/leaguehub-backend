@@ -25,6 +25,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      # 환경별 properties 파일 생성 - API-KEY
+      - name: make application-API-KEY.properties
+        run: |
+          cd ./src/main/resources
+          touch ./application-API-KEY.properties
+          echo "${{ secrets.YML_CI }}" > ./application-API-KEY.properties
+        shell: bash
+
+
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
 
